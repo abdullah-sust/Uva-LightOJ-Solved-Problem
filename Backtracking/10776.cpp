@@ -1,51 +1,63 @@
+//uva 10776
 #include<cstdio>
 #include<vector>
-#include<cstring>
+#include<iostream>
+#include<string.h>
 #include<algorithm>
 using namespace std;
-#define s scanf
-#define p printf
-bool taken[31];
 vector <char> result;
-int n,m;
-char arr[31];
-void func(void)
-{
-    int i;
-    if(result.size()==m)
-    {
-        for(i=0;i<m;++i)
-        p("%c",result[i]);
-        p("\n");
-    }
-    else
-    {
-        for(i=0;i<n;++i)
-        {
-            if(!result.empty()&&result[result.size()-1]>arr[i])
-            continue;
-            if(taken[i]==0)
-            {
-                taken[i]=1;
-                result.push_back(arr[i]);
-                func();
-                result.pop_back();
-                taken[i]=0;
-                while(arr[i]==arr[i+1])
-                ++i;
-            }
-        }
-    }
-}
+bool taken[30];
+char arr[30];
+int n,l,pos=-1;
+void recur();
 int main()
 {
-    while(s("%s %d",&arr,&m)!=EOF)
+    while(scanf("%s %d",&arr,&l)==2)
     {
-        result.clear();
         n=strlen(arr);
         sort(arr,arr+n);
-        memset(taken,0,sizeof(taken));
-        func();
+
+        // memset(arr,0,sizeof(arr));
+        memset(taken,false,sizeof(taken));
+        pos=-1;
+
+        recur();
+
+        result.clear();
     }
+    //cout<<"-"<<endl;
     return 0;
+}
+
+void recur()
+{
+    if(result.size()==l)
+    {
+        for(int i=0;i<l;++i)
+        cout<<result[i];
+        cout<<"\n";
+        return;
+    }
+    for(int i=0;i<n;++i)
+    {
+        if(pos!=-1 && result[pos]>arr[i])
+        continue;
+        if(taken[i]==false)
+        {
+            ++pos;
+            taken[i]=true;
+            result.push_back(arr[i]);
+
+            recur();
+
+            pos--;
+            taken[i]=false;
+            result.pop_back();
+
+            while(arr[i]==arr[i+1] && (i+1)<n)
+            ++i;
+
+        }
+
+    }
 }
